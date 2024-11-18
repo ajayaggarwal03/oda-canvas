@@ -116,7 +116,13 @@ jobs:
           include_passed: true
           detailed_summary: true
       {%- endif %}
-                
+
+      - name: Install Cosign
+        run: |
+          curl -LO https://github.com/sigstore/cosign/releases/download/v1.4.0/cosign-linux-amd64
+          chmod +x cosign-linux-amd64
+          sudo mv cosign-linux-amd64 /usr/local/bin/cosign
+          
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -129,10 +135,21 @@ jobs:
             GIT_COMMIT_SHA=${% raw %}{{ env.GIT_COMMIT_SHA }}{% endraw %}
             CICD_BUILD_TIME=${% raw %}{{ env.CICD_BUILD_TIME }}{% endraw %}
           platforms: {% if platforms %}{{ platforms }}{% else %}linux/amd64,linux/arm64{% endif %}
-          push: true
+          push: false
           tags: |
             ${% raw %}{{ steps.get_values_image.outputs.result }}{% endraw %}:latest
             ${% raw %}{{ steps.get_values_image.outputs.result }}{% endraw %}:${% raw %}{{ steps.get_values_version.outputs.result }}{% endraw %}
         env:
           SOURCE_DATE_EPOCH: ${% raw %}{{ env.SOURCE_DATE_EPOCH }}{% endraw %}
 
+      - name: Sign Docker image
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+        run: |
+          cosign sign --key ${{ secrets.COSIGN_KEY }} ${{ steps.get_values_image.outputs.result }}:latest
+          cosign sign --key ${{ secrets.COSIGN_KEY }} ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
+
+      - name: Verify signed Docker image
+        run: |
+          cosign verify ${{ steps.get_values_image.outputs.result }}:latest
+          cosign verify ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
