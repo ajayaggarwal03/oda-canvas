@@ -1,4 +1,4 @@
 image: ajayaggarwalo/baseimage-kubectl-curl
 #image: tmforumodacanvas/baseimage-kubectl-curl
 version: 1.30.5
-prereleaseSuffix:
+prereleaseSuffix: test
