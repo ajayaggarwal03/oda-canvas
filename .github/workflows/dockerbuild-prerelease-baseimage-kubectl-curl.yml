@@ -77,7 +77,13 @@ jobs:
         if: steps.check_release_docker_image.outputs.image_exist==1
         run: |
           echo  "::error::image tag ${{ steps.get_values_release_version.outputs.result }} already exists in repo ${{ steps.get_values_image.outputs.result }}, exiting!" && exit 2
-                
+
+      - name: Install Cosign
+        run: |
+          curl -LO https://github.com/sigstore/cosign/releases/download/v1.4.0/cosign-linux-amd64
+          chmod +x cosign-linux-amd64
+          sudo mv cosign-linux-amd64 /usr/local/bin/cosign
+          
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
