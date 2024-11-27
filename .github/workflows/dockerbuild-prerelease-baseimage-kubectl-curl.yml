@@ -101,7 +101,7 @@ jobs:
           SOURCE_DATE_EPOCH: ${{ env.SOURCE_DATE_EPOCH }}
 
       - name: Write signing key to disk
-        run: echo "${{ secrets.COSIGN_KEY1 }}" > cosign.key
+        run: echo "${{ secrets.COSIGN_KEY2 }}" > cosign.key
         shell: bash
 
       - name: Set key file permissions
