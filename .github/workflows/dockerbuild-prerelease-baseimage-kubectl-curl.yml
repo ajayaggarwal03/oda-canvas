@@ -93,3 +93,11 @@ jobs:
             ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
         env:
           SOURCE_DATE_EPOCH: ${{ env.SOURCE_DATE_EPOCH }}
+
+      - name: Sign Docker image
+        run: |
+          cosign sign --key ${{ secrets.COSIGN_KEY }} ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
+
+      - name: Verify signed Docker image
+        run: |
+          cosign verify ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
