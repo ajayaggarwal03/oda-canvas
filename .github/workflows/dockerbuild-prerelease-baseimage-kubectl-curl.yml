@@ -105,6 +105,7 @@ jobs:
           COSIGN_KEY: ${{ secrets.COSIGN_KEY3 }}      
         run: |
           echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
+          chmod 600 cosign.key
           cosign sign --key cosign.key ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
 
       - name: Verify signed Docker image
