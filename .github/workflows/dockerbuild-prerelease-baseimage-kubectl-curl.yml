@@ -77,17 +77,6 @@ jobs:
         if: steps.check_release_docker_image.outputs.image_exist==1
         run: |
           echo  "::error::image tag ${{ steps.get_values_release_version.outputs.result }} already exists in repo ${{ steps.get_values_image.outputs.result }}, exiting!" && exit 2
-
-#      - name: Install Cosign
-#        run: |
-#          curl -LO https://github.com/sigstore/cosign/releases/download/v1.4.0/cosign-linux-amd64
-#          chmod +x cosign-linux-amd64
-#          sudo mv cosign-linux-amd64 /usr/local/bin/cosign
-          
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.7.0
-        with:
-          cosign-release: 'v2.4.1'
           
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -104,15 +93,16 @@ jobs:
             ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
         env:
           SOURCE_DATE_EPOCH: ${{ env.SOURCE_DATE_EPOCH }}
-      
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.7.0
+        with:
+          cosign-release: 'v2.4.1'
+          
       - name: Sign Docker image
         env:
           COSIGN_KEY: ${{ secrets.COSIGN_KEY3 }}      
         run: |
-          echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
-          chmod 600 cosign.key
-          cosign sign --key cosign.key --tlog-upload=true --yes ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
-
-      - name: Verify signed Docker image
-        run: |
-          cosign verify ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
+#          echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
+#          chmod 600 cosign.key
+          cosign sign --key ${{ secrets.COSIGN_KEY3 }} --tlog-upload=true --yes ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
