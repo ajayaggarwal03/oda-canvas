@@ -102,7 +102,7 @@ jobs:
       
       - name: Sign Docker image
         run: |
-          cosign sign --key ${{ secrets.COSIGN_KEY2 }} ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
+          cosign sign --key ${{ secrets.COSIGN_KEY3 }} ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
 
       - name: Verify signed Docker image
         run: |
