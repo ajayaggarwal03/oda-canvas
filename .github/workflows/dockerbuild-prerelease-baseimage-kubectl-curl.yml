@@ -101,8 +101,11 @@ jobs:
           SOURCE_DATE_EPOCH: ${{ env.SOURCE_DATE_EPOCH }}
       
       - name: Sign Docker image
+        env:
+          COSIGN_KEY: ${{ secrets.COSIGN_KEY3 }}      
         run: |
-          cosign sign --key ${{ secrets.COSIGN_KEY3 }} ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
+          echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
+          cosign sign --key cosign.key ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
 
       - name: Verify signed Docker image
         run: |
