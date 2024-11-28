@@ -103,4 +103,6 @@ jobs:
         env:
           COSIGN_KEY: ${{ secrets.COSIGN_KEY3 }}      
         run: |
-          cosign sign --key ${{ secrets.COSIGN_KEY3 }} --tlog-upload=true --yes ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
+          echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
+          chmod 600 cosign.key
+          cosign sign --key cosign.key --tlog-upload=true --yes ${{ steps.get_values_image.outputs.result }}:${{ steps.get_values_version.outputs.result }}
