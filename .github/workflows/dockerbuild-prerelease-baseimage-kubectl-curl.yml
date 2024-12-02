@@ -101,7 +101,7 @@ jobs:
           
       - name: Sign Docker image
         env:
-          COSIGN_KEY: ${{ secrets.COSIGN_KEY3 }}      
+          COSIGN_KEY: "${{ secrets.COSIGN_KEY3 }}"      
         run: |
           echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
           chmod 600 cosign.key
