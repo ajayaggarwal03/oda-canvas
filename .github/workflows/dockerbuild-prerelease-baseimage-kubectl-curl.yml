@@ -99,9 +99,7 @@ jobs:
         with:
           cosign-release: 'v2.4.1'
           
-      - name: Sign Docker image
-        env:
-          COSIGN_KEY: "${{ secrets.COSIGN_KEY3 }}"      
+      - name: Sign Docker image     
         run: |
           echo "${{ secrets.COSIGN_KEY3 }}" > cosign.key
           chmod 600 cosign.key
